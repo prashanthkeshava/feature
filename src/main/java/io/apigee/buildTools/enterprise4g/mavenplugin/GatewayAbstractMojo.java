@@ -211,6 +211,12 @@ public abstract class GatewayAbstractMojo extends AbstractMojo {
 	private String serviceAccountFilePath;
 	
 	/**
+	 * overrides file
+	 * @parameter expression="${apigee.overrides.file}"
+ 	 */
+	private String overridesFilePath;
+	
+	/**
 	* Skip running this plugin.
 	* Default is false.
 	*
@@ -249,6 +255,7 @@ public abstract class GatewayAbstractMojo extends AbstractMojo {
 		this.buildProfile.setOverridedelay(this.overridedelay);
 		this.buildProfile.setRevision(this.revision);
 		this.buildProfile.setServiceAccountJSONFile(this.serviceAccountFilePath);
+		this.buildProfile.setOverridesFile(this.overridesFilePath);
 		
 		return buildProfile;
 	}
@@ -343,5 +350,15 @@ public abstract class GatewayAbstractMojo extends AbstractMojo {
 	public void setRevision(Long revision) {
 		this.revision = revision;
 	}
+
+	public String getOverridesFilePath() {
+		return overridesFilePath;
+	}
+
+	public void setOverridesFilePath(String overridesFilePath) {
+		this.overridesFilePath = overridesFilePath;
+	}
+	
+	
 	
 }

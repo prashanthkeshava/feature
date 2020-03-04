@@ -40,6 +40,15 @@ public class ServerProfile {
 	private Long overridedelay;
 	private Long revision;
 	private String serviceAccountJSONFile;
+	private String overridesFile;
+	
+	public String getOverridesFile() {
+		return overridesFile;
+	}
+
+	public void setOverridesFile(String overridesFile) {
+		this.overridesFile = overridesFile;
+	}
 	
 	public String getServiceAccountJSONFile() {
 		return serviceAccountJSONFile;

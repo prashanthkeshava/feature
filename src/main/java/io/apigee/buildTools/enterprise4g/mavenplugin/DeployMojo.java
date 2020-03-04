@@ -15,14 +15,17 @@
  */
 package io.apigee.buildTools.enterprise4g.mavenplugin;
 
-import io.apigee.buildTools.enterprise4g.rest.RestUtil;
-import io.apigee.buildTools.enterprise4g.rest.RestUtil.Options;
+import java.io.IOException;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import com.apigee.hybrid.overrides.OverridesAdaptor;
+
+import io.apigee.buildTools.enterprise4g.rest.RestUtil;
+import io.apigee.buildTools.enterprise4g.rest.RestUtil.Options;
 
 
 
@@ -116,7 +119,9 @@ public class DeployMojo extends GatewayAbstractMojo
 				}
 			}
 			
-			
+			if (this.getOverridesFilePath() == null || this.getOverridesFilePath().equalsIgnoreCase("")) {
+				throw new MojoFailureException("Overrides file is missing");
+			}
 			
 			logger.info("\n\n=============Initializing Maven Deployment================\n\n");
 			
@@ -208,23 +213,32 @@ public class DeployMojo extends GatewayAbstractMojo
 	 * @throws InterruptedException 
 	 */
 	
-	public void doActivateBundle()  throws IOException, MojoFailureException, InterruptedException{
+	public void doActivateBundle() throws IOException, MojoFailureException, InterruptedException{
+		String revision = null;
 		try {
 			logger.info("\n\n=============Activating Bundle================\n\n");
 			state = State.ACTIVATING;
-			String revision = RestUtil.activateBundleRevision(super.getProfile(), this.bundleRevision);
+			revision = RestUtil.activateBundleRevision(super.getProfile(), this.bundleRevision);
 			boolean deployed = false;
 			//Loop to check the deployment status
 			for (; !deployed; ) {
 				deployed = RestUtil.getDeploymentStateForRevision(super.getProfile(), revision);
 	        	Thread.sleep(5*1000);
 			}
+			Thread.sleep(5*1000);
+			if(super.getProfile().getApi_type() == null || super.getProfile().getApi_type().equals("") || super.getProfile().getApi_type().equals("apis")) {
+				//update Overrides file only for proxy deployment. This is not applicable for sharedflows
+				logger.info("\n\n=============Updating basepath in overrides file================\n\n");
+				OverridesAdaptor.updateOverrides(super.getProfile().getOverridesFile(), super.getProfile().getEnvironment(), super.getBuildDirectory()+"/apiproxy/proxies");
+			}
 		} catch (IOException e) {
+			e.printStackTrace();
 			throw e ;
-		} catch (RuntimeException e) {
-			throw e;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new MojoFailureException(e.getMessage());
 		} 
-		Thread.sleep(5*1000);
+		
 	}
 	
 	/**
