@@ -272,6 +272,13 @@ public abstract class GatewayAbstractMojo extends AbstractMojo implements Contex
 	 * @parameter property="apigee.revision"
 	 */
 	private Long revision;
+	
+	/**
+	 * Path to the config.json file (else defaults to config.json in the main directory)
+	 *
+	 * @parameter property="apigee.deploy.config.file"
+	 */
+	private String apigeeConfigFilePath;
 
 	/**
 	 * Skip running this plugin.
@@ -425,6 +432,10 @@ public abstract class GatewayAbstractMojo extends AbstractMojo implements Contex
 
 		}
 
+		if (isNotBlank(apigeeConfigFilePath)) {
+			profile.setApigeeConfigFilePath(apigeeConfigFilePath);
+		}
+		
 		return profile;
 	}
 
@@ -509,6 +520,14 @@ public abstract class GatewayAbstractMojo extends AbstractMojo implements Contex
 
 	public void setOverrideDelay(Long overrideDelay) {
 		this.overrideDelay = overrideDelay;
+	}
+	
+	public String getApigeeConfigFilePath() {
+		return apigeeConfigFilePath;
+	}
+
+	public void setApigeeConfigFilePath(String apigeeConfigFilePath) {
+		this.apigeeConfigFilePath = apigeeConfigFilePath;
 	}
 
 	/**

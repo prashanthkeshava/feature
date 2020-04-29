@@ -15,16 +15,18 @@
  */
 package io.apigee.buildTools.enterprise4g.mavenplugin;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
+import java.io.File;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.commons.io.FileUtils;
 
 import io.apigee.buildTools.enterprise4g.rest.Bundle;
 import io.apigee.buildTools.enterprise4g.utils.PackageConfigurer;
 import io.apigee.buildTools.enterprise4g.utils.ServerProfile;
 import io.apigee.buildTools.enterprise4g.utils.ZipUtils;
-
-import java.io.File;
 
 /**
  * Goal to upload 4g gateway  bundle on server
@@ -35,7 +37,7 @@ import java.io.File;
  */
 
 public class ConfigureMojo extends GatewayAbstractMojo {
-
+	
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
 		if (isSkip()) {
@@ -43,14 +45,15 @@ public class ConfigureMojo extends GatewayAbstractMojo {
 			return;
 		}
 
-		File configFile = findConfigFile();
-
 		// Need a server profile but can skip auth validation as we dont do anything with it.
 		ServerProfile profile = createProfile(false);
 
 		Bundle bundle = createBundle();
+		
+		File configFile = findConfigFile(profile.getApigeeConfigFilePath());
 
 		if (configFile != null) {
+			getLog().info("Configuring package using "+ configFile.getAbsolutePath());
 			configurePackage(profile, configFile, bundle);
 		}
 
@@ -134,13 +137,16 @@ public class ConfigureMojo extends GatewayAbstractMojo {
 		}
 	}
 
-	private File findConfigFile() throws MojoExecutionException {
-		File configFile = new File(getBaseDirectoryPath(), "config.json");
-
+	private File findConfigFile(String apigeeConfigFilePath) throws MojoExecutionException {
+		File configFile = null;
+		if(isBlank(apigeeConfigFilePath)) {
+			configFile = new File(getBaseDirectoryPath(), "config.json");
+		}else {
+			configFile = new File(apigeeConfigFilePath);
+		}
 		if (configFile.exists()) {
 			return configFile;
 		}
-
 		getLog().info("No config.json found. Skipping package configuration.");
 		return null;
 	}

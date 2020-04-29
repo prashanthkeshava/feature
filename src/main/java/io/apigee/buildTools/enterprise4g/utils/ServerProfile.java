@@ -54,6 +54,8 @@ public class ServerProfile {
 	private String proxyProtocol;
 	private String proxyServer;
 	private int proxyPort;
+	
+	private String apigeeConfigFilePath;
 
 	public String getOrg() {
 		return org;
@@ -317,6 +319,22 @@ public class ServerProfile {
 	public void setHasProxy(boolean hasProxy) {
 		this.hasProxy = hasProxy;
 	}
+
+	/**
+	 * @return the apigeeConfigFilePath
+	 */
+	public String getApigeeConfigFilePath() {
+		return apigeeConfigFilePath;
+	}
+
+	/**
+	 * @param apigeeConfigFilePath the apigeeConfigFilePath to set
+	 */
+	public void setApigeeConfigFilePath(String apigeeConfigFilePath) {
+		this.apigeeConfigFilePath = apigeeConfigFilePath;
+	}
+	
+	
 	
 	
 }
