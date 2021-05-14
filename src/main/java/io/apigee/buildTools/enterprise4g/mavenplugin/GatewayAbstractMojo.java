@@ -211,6 +211,12 @@ public abstract class GatewayAbstractMojo extends AbstractMojo {
 	private String serviceAccountFilePath;
 	
 	/**
+	 * apigeeArchiveLabels
+	 * @parameter expression="${apigee.archive.labels}"
+ 	 */
+	private String apigeeArchiveLabels;
+	
+	/**
 	* Skip running this plugin.
 	* Default is false.
 	*
@@ -249,6 +255,7 @@ public abstract class GatewayAbstractMojo extends AbstractMojo {
 		this.buildProfile.setOverridedelay(this.overridedelay);
 		this.buildProfile.setRevision(this.revision);
 		this.buildProfile.setServiceAccountJSONFile(this.serviceAccountFilePath);
+		this.buildProfile.setApigeeArchiveLabels(this.apigeeArchiveLabels);
 		
 		return buildProfile;
 	}

@@ -15,6 +15,10 @@
  */
 package io.apigee.buildTools.enterprise4g.utils;
 
+import java.util.Map;
+
+import com.google.common.base.Splitter;
+
 public class ServerProfile {
 
 	private String application; // application name
@@ -40,6 +44,15 @@ public class ServerProfile {
 	private Long overridedelay;
 	private Long revision;
 	private String serviceAccountJSONFile;
+	private Map<String, String> apigeeArchiveLabels;
+	
+	public Map<String, String> getApigeeArchiveLabels() {
+		return apigeeArchiveLabels;
+	}
+
+	public void setApigeeArchiveLabels(String apigeeArchiveLabels) {
+		this.apigeeArchiveLabels = (apigeeArchiveLabels!=null)?Splitter.on(",").withKeyValueSeparator("=").split(apigeeArchiveLabels):null;
+	}
 	
 	public String getServiceAccountJSONFile() {
 		return serviceAccountJSONFile;
